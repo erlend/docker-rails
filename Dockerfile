@@ -10,7 +10,7 @@ ENV RAILS_ENV=production \
 
 WORKDIR /app
 
-RUN apk add --no-cache libxml2 libxslt tzdata && \
+RUN apk add --no-cache libxml2 libxslt tzdata nodejs && \
     addgroup rails && \
     adduser -DG rails rails
 
