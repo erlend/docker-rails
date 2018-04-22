@@ -36,4 +36,4 @@ ONBUILD RUN \
     rm -f /var/cache/apk/* /usr/local/lib/ruby/gems/*/cache/*
 
 ONBUILD USER rails
-CMD ["rails", "server", "--bind=0.0.0.0"]
+CMD ["rails", "server"]
