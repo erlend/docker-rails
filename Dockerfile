@@ -12,6 +12,8 @@ ENV RAILS_ENV="production" \
 WORKDIR /app
 
 RUN apk add --no-cache libxml2 libxslt tzdata nodejs && \
+    echo "@testing http://nl.alpinelinux.org/alpine/edge/testing" \
+    | tee -a /etc/apk/repositories
     addgroup rails && \
     adduser -DG rails rails
 
