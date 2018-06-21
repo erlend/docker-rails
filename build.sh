@@ -19,14 +19,14 @@ if grep -q "gem ['\"]pg['\"]" Gemfile; then
   echo PostgreSQL
   BUILD_LIBS="$BUILD_LIBS postgresql-dev"
   RUN_LIBS="$RUN_LIBS postgresql-libs"
-  DATABASE_URL="postgres://postgres:@postgres/rails_app"
+  DATABASE_URL="postgres:/"
 fi
 
 if grep -q "gem ['\"]mysql2['\"]" Gemfile; then
   echo MySQL
   BUILD_LIBS="$BUILD_LIBS mariadb-dev"
   RUN_LIBS="$RUN_LIBS mariadb-client-libs"
-  DATABASE_URL="postgres://postgres:@postgres/rails_app"
+  DATABASE_URL="mysql:/"
 fi
 
 if grep -q "gem ['\"]sqlite3['\"]" Gemfile; then
