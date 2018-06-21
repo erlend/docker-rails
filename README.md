@@ -18,14 +18,14 @@ docker build -t imagename .
 
 ## Additional configuration
 
-The following build args can be used to change the contents of the final image:
+The following options can be set with the `--build-arg` argument when running `docker build`.
 
-| Argument           | Default          | Description                                        |
-| ------------------ | ---------------- | -------------------------------------------------- |
-| `RAILS_ENV`        | production       | Rails environment used for `assets:precompile`     |
-| `BUNDLER_WITHOUT`  | development:test | Bundler won't install these groups                 |
-| `INSTALL_GEMS`     |                  | Space separated list of Ruby gems to install       |
-| `INSTALL_PACKAGES` |                  | Space separated list of Alpine packages to install |
+| Argument         | Default          | Description                              |
+| ---------------- | ---------------- | ---------------------------------------- |
+| `RAILS_ENV`      | production       | Environment used for `assets:precompile` |
+| `BUNDLE_WITHOUT` | development:test | Bundler won't install these groups       |
+
+## Examples
 
 ### Using foreman
 
@@ -33,11 +33,27 @@ Make sure your `Dockerfile` contains the following:
 
 ```Dockerfile
 FROM erlend/rails
+RUN gem install foreman -N
 CMD ["foreman", "start"]
 ```
 
-Then build the image with the `INSTALL_GEMS` argument.
+### Creating a image for a different environment
 
+You'll need to set the `RAILS_ENV` variable in your `Dockerfile` and pass it
+ as `build-arg` when building. The `BUNDLE_WITHOUT` argument will probably need
+to be set too.
+
+The `Dockerfile` following would build a image for the test environment:
+
+```Dockerfile
+FROM erlend/rails
+ENV RAILS_ENV=test
+```
+
+Then build it with:
 ```sh
-docker build -t imagename --build-arg INSTALL_GEMS="foreman" .
+docker build . \
+         -t imagename \
+         --build-arg RAILS_ENV=test \
+         --build-arg BUNDLE_WITHOUT="development:production"
 ```

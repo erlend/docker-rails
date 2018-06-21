@@ -11,18 +11,14 @@ ENV RAILS_ENV="production" \
 
 WORKDIR /app
 
-RUN apk add --no-cache libxml2 libxslt tzdata nodejs && \
-    echo "@testing http://nl.alpinelinux.org/alpine/edge/testing" \
-    | tee -a /etc/apk/repositories
+RUN apk add --no-cache libxml2 libxslt tzdata && \
     addgroup rails && \
     adduser -DG rails rails
 
 COPY build.sh /
 
 ONBUILD ARG RAILS_ENV="production"
-ONBUILD ARG BUNDLER_WITHOUT="development:test"
-ONBUILD ARG INSTALL_GEMS=""
-ONBUILD ARG INSTALL_PACKAGES=""
+ONBUILD ARG BUNDLE_WITHOUT="development:test"
 
 ONBUILD COPY . /app
 

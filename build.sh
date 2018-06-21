@@ -1,39 +1,58 @@
 #!/bin/sh
-BUILD_DEPS="git su-exec alpine-sdk yarn"
-BUILD_LIBS="libxml2-dev libxslt-dev libffi-dev"
-BUILD_DB="mariadb-dev postgresql-dev sqlite-dev"
-RUN_DB="mariadb-client-libs postgresql-libs sqlite-libs"
-INSTALL_PACKAGES="$INSTALL_PACKAGES $BUILD_DEPS $BUILD_LIBS $BUILD_DB $RUN_DB"
+set -e
 
-function notice {
-  echo
-  echo "==> $@"
-  echo
+BUILD_DEPS="git alpine-sdk yarn"
+BUILD_LIBS="libxml2-dev libxslt-dev libffi-dev"
+
+# Make sure some commonly required environment variables are set
+export \
+  AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID-x} \
+  AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY-x} \
+  AWS_S3_BUCKET=${AWS_S3_BUCKET-x}
+
+notice() {
+  echo -e "\n\033[0;32m==> $@\033[0m\n"
 }
 
-chown -R rails:rails .
+notice Detecting database adapter
+if grep -q "gem ['\"]pg['\"]" Gemfile; then
+  echo PostgreSQL
+  BUILD_LIBS="$BUILD_LIBS postgresql-dev"
+  RUN_LIBS="$RUN_LIBS postgresql-libs"
+  DATABASE_URL="postgres://postgres:@postgres/rails_app"
+fi
 
-notice Installing dependencies...
-apk add -U dumb-init $INSTALL_PACKAGES
+if grep -q "gem ['\"]mysql2['\"]" Gemfile; then
+  echo MySQL
+  BUILD_LIBS="$BUILD_LIBS mariadb-dev"
+  RUN_LIBS="$RUN_LIBS mariadb-client-libs"
+  DATABASE_URL="postgres://postgres:@postgres/rails_app"
+fi
 
-su-exec rails bundle config build.nokogiri --use-system-libraries
-su-exec rails bundle config build.nokogumbo --use-system-libraries
+if grep -q "gem ['\"]sqlite3['\"]" Gemfile; then
+  echo SQLite
+  BUILD_LIBS="$BUILD_LIBS sqlite-dev"
+  RUN_LIBS="$RUN_LIBS sqlite-libs"
+  DATABASE_URL="sqlite:db/$RAILS_ENV.sqlite3"
+fi
 
-notice Installing ruby gems...
-su-exec rails gem install $INSTALL_GEMS -N
-su-exec rails bundle install --deployment --without=$BUNDLER_WITHOUT
+notice Installing system dependencies...
+apk add -U dumb-init $BUILD_DEPS $BUILD_LIBS $RUN_LIBS
 
-notice Installing node packages...
-su-exec rails yarn install --production --non-interactive
+bundle config build.nokogiri --use-system-libraries
+bundle config build.nokogumbo --use-system-libraries
+
+notice Installing Ruby packages...
+bundle install --deployment --without="$BUNDLE_WITHOUT"
+
+# Ruby bundle must be installed this row or "bundle exec" will work
+export SECRET_KEY_BASE=${SECRET_KEY_BASE-`bundle exec rake secret`} DATABASE_URL
 
 notice Compiling assets...
-su-exec rails bundle exec rake assets:precompile
+bundle exec rake assets:precompile
 
-notice Removing database dependencies...
-bundle list | grep -q "\* mysql\d "  || apk del mariadb-client-libs
-bundle list | grep -q "\* pg"        || apk del postgresql-libs
-bundle list | grep -q "\* sqlite\d " || apk del sqlite-libs
+chown -R rails:rails tmp
 
 notice Cleaning up...
-apk del $BUILD_DEPS $BUILD_LIBS $BUILD_DB
+apk del $BUILD_DEPS $BUILD_LIBS
 rm -f /var/cache/apk/* /usr/local/lib/ruby/gems/*/cache/* /build.sh
