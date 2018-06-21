@@ -55,4 +55,8 @@ chown -R rails:rails tmp
 
 notice Cleaning up...
 apk del $BUILD_DEPS $BUILD_LIBS
-rm -f /var/cache/apk/* /usr/local/lib/ruby/gems/*/cache/* /build.sh
+rm -rf \
+  /home/rails/.cache \
+  /var/cache/apk/* \
+  /usr/local/lib/ruby/gems/*/cache/* \
+  /build.sh
