@@ -11,18 +11,22 @@ ENV RAILS_ENV="production" \
 
 WORKDIR /app
 
-RUN apk add --no-cache libxml2 libxslt tzdata && \
+RUN apk add --no-cache dumb-init libxml2 libxslt tzdata && \
     addgroup rails && \
     adduser -DG rails rails
 
-COPY build.sh /
+COPY build/* /build/
 
 ONBUILD ARG RAILS_ENV="production"
 ONBUILD ARG BUNDLE_WITHOUT="development:test"
 
+ONBUILD COPY Gemfile* /app/
+
+ONBUILD RUN /build/system.sh
+
 ONBUILD COPY . /app
 
-ONBUILD RUN /build.sh
+ONBUILD RUN /build/assets.sh
 
 ONBUILD USER rails
 ENTRYPOINT ["dumb-init"]
