@@ -14,6 +14,8 @@ RUN apk add --no-cache \
       build-base \
       dumb-init \
       git \
+      nodejs \
+      yarn \
       libffi-dev \
       libxml2-dev \
       libxslt-dev \
