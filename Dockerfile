@@ -32,5 +32,4 @@ RUN bundle config build.nokogiri --use-system-libraries && \
 
 COPY entrypoint.sh /
 ENTRYPOINT ["/entrypoint.sh"]
-CMD rails server -b 0.0.0.0
 EXPOSE 3000
