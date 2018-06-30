@@ -25,11 +25,12 @@ RUN apk add --no-cache \
     adduser -DG rails rails && \
     chown rails:rails /app
 
-# USER rails
+COPY entrypoint.sh /
+ENTRYPOINT ["/entrypoint.sh"]
+
+EXPOSE 3000
+
+USER rails
 
 RUN bundle config build.nokogiri --use-system-libraries && \
     bundle config build.nokogumbo --use-system-libraries
-
-COPY entrypoint.sh /
-ENTRYPOINT ["/entrypoint.sh"]
-EXPOSE 3000
