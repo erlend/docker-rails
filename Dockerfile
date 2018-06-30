@@ -30,5 +30,5 @@ ONBUILD RUN /build/assets.sh
 
 ONBUILD USER rails
 ENTRYPOINT ["dumb-init"]
-CMD ["rails", "server"]
+CMD bundle exec rails server -b 0.0.0.0
 EXPOSE 3000
