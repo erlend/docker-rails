@@ -13,7 +13,7 @@ if [ "$1" = "rails" ] || [ "$1" = "rspec" ]; then
   fi
 
   if [ "$2" = "server" ] || [ "$2" = "s" ]; then
-    rm -f /tmp/pids/server.pid
+    rm -f tmp/pids/server.pid
   fi
 
 fi
