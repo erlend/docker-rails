@@ -4,18 +4,15 @@ if [ $# -eq 0 ]; then
   set -- rails server -b 0.0.0.0
 fi
 
-if [ "$1" = "rails" ] || [ "$1" = "rspec" ]; then
-
+if [ "$1 $2" = "rails server" ] || [ "$1 $2" = "rails s" ]; then
   if [ -x bin/setup ]; then
-    bin/setup
+    ./bin/setup
   else
-    bundle
+    [ -f Gemfile   ] && bundle
+    [ -f yarn.lock ] && yarn
   fi
 
-  if [ "$2" = "server" ] || [ "$2" = "s" ]; then
-    rm -f tmp/pids/server.pid
-  fi
-
+  rm -f tmp/pids/server.pid
 fi
 
 exec $@
