@@ -5,16 +5,14 @@ if [ $# -eq 0 ]; then
 fi
 
 if [ "$1 $2" = "rails server" ] || [ "$1 $2" = "rails s" ]; then
-  chown rails:rails /usr/local/bundle node_modules
-
   if [ -x bin/setup ]; then
-    su-exec rails ./bin/setup
+    ./bin/setup
   else
-    [ -f Gemfile   ] && su-exec rails bundle
-    [ -f yarn.lock ] && su-exec rails yarn
+    [ -f Gemfile   ] && rails bundle
+    [ -f yarn.lock ] && rails yarn
   fi
 
   rm -f tmp/pids/server.pid
 fi
 
-exec su-exec rails $@
+exec $@
