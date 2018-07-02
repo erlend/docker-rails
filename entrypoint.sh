@@ -5,7 +5,7 @@ if [ $# -eq 0 ]; then
 fi
 
 if [ "$1 $2" = "rails server" ] || [ "$1 $2" = "rails s" ]; then
-  chown rails:rails /usr/local/bundle/gems
+  chown rails:rails /usr/local/bundle/gems node_modules
 
   if [ -x bin/setup ]; then
     su-exec rails ./bin/setup
