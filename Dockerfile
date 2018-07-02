@@ -11,6 +11,7 @@ ENV RAILS_SERVE_STATIC_FILES="true" \
 WORKDIR /app
 
 RUN apk add --no-cache \
+      su-exec \
       build-base \
       dumb-init \
       git \
@@ -27,12 +28,13 @@ RUN apk add --no-cache \
     adduser -DG rails rails && \
     chown rails:rails /app
 
-COPY entrypoint.sh /
-ENTRYPOINT ["/entrypoint.sh"]
-
 EXPOSE 3000
 
 USER rails
-
 RUN bundle config build.nokogiri --use-system-libraries && \
     bundle config build.nokogumbo --use-system-libraries
+
+USER root
+COPY entrypoint.sh /
+ENTRYPOINT ["/entrypoint.sh"]
+
