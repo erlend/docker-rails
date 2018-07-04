@@ -17,6 +17,7 @@ RUN apk add --no-cache \
       build-base \
       dumb-init \
       git \
+      less \
       nodejs \
       yarn \
       libffi-dev \

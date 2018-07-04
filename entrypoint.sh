@@ -5,12 +5,9 @@ if [ $# -eq 0 ]; then
 fi
 
 if [ "$1 $2" = "rails server" ] || [ "$1 $2" = "rails s" ]; then
-  if [ -x bin/setup ]; then
-    ./bin/setup
-  else
-    [ -f Gemfile   ] && rails bundle
-    [ -f yarn.lock ] && rails yarn
-  fi
+  [ -f Gemfile   ] && bundle
+  [ -f yarn.lock ] && yarn
+  [ -f Rakefile  ] && rake db:create db:migrate
 
   rm -f tmp/pids/server.pid
 fi
