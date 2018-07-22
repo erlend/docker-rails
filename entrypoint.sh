@@ -4,12 +4,14 @@ if [ $# -eq 0 ]; then
   set -- rails server -b 0.0.0.0
 fi
 
-if [ "$1 $2" = "rails server" ] || [ "$1 $2" = "rails s" ]; then
-  [ -f Gemfile   ] && bundle
-  [ -f yarn.lock ] && yarn
+if [ "$1" = "rails" ]; then
+  [ -f Gemfile   ] && (bundle check || bundle install)
+  [ -f yarn.lock ] && (yarn check   || yarn install)
   [ -f Rakefile  ] && rake db:create db:migrate
 
-  rm -f tmp/pids/server.pid
+  if [ "$2" = "s" ] || [ "$2" == "server" ]; then
+    rm -f tmp/pids/server.pid
+  fi
 fi
 
 exec $@
