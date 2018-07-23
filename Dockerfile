@@ -8,9 +8,6 @@ ENV RAILS_SERVE_STATIC_FILES="true" \
     RAILS_LOG_TO_STDOUT="true" \
     PATH="/app/bin:$PATH"
 
-VOLUME /app/node_modules
-VOLUME /usr/local/bundle
-
 WORKDIR /app
 
 RUN apk add --no-cache \
@@ -29,7 +26,9 @@ RUN apk add --no-cache \
       tzdata && \
     addgroup rails && \
     adduser -DG rails rails && \
-    chown rails:rails /app /app/node_modules /usr/local/bundle
+    chown rails:rails /app /app/tmp /app/node_modules /usr/local/bundle
+
+VOLUME /app/tmp /app/node_modules /usr/local/bundle
 
 COPY entrypoint.sh /
 
