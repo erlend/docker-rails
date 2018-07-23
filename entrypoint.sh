@@ -6,7 +6,7 @@ fi
 
 if [ "$1" = "rails" ]; then
   [ -f Gemfile   ] && (bundle check || bundle install)
-  [ -f yarn.lock ] && (yarn check   || yarn install)
+  [ -f yarn.lock ] && yarn install
   [ -f Rakefile  ] && rake db:create db:migrate
 
   if [ "$2" = "s" ] || [ "$2" == "server" ]; then
