@@ -26,7 +26,8 @@ RUN apk add --no-cache \
       tzdata && \
     addgroup rails && \
     adduser -DG rails rails && \
-    chown rails:rails /app /app/tmp /app/node_modules /usr/local/bundle
+    mkdir node_modules tmp && \
+    chown rails:rails . tmp node_modules /usr/local/bundle
 
 VOLUME /app/tmp /app/node_modules /usr/local/bundle
 
