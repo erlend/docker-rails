@@ -7,7 +7,8 @@ MAINTAINER Erlend Finvåg <erlend.finvag@gmail.com>
 ENV RAILS_ENV="production" \
     RAILS_SERVE_STATIC_FILES="true" \
     RAILS_LOG_TO_STDOUT="true" \
-    PATH="/app/bin:$PATH"
+    PATH="/app/bin:$PATH" \
+    SPRING_SOCKET="/app/tmp/spring.sock"
 
 WORKDIR /app
 
