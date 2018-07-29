@@ -14,6 +14,7 @@ RUN apk add --no-cache \
       build-base \
       dumb-init \
       git \
+      graphviz \
       less \
       nodejs \
       yarn \
@@ -24,6 +25,7 @@ RUN apk add --no-cache \
       postgresql-dev \
       sqlite-dev \
       tzdata && \
+    gem install graphviz -N && \
     addgroup rails && \
     adduser -DG rails rails && \
     mkdir node_modules tmp && \
