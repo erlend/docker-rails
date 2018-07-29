@@ -1,0 +1,23 @@
+#!/bin/bash
+
+VERSIONS=$(
+curl https://registry.hub.docker.com/v1/repositories/ruby/tags |\
+  json_pp |\
+  grep -o '[^"]*-alpine[^"]*' |\
+  sed 's/\(.*\)-alpine\(.*\)/\1 \2/'
+)
+
+for version in VERSIONS; do
+  build_args="--build-arg RUBY_VERSION=$(echo $version | awk '{ print $1 '})"
+  tag="$IMAGE_NAME:$RUBY_VERSION"
+
+  alpine_version=$(echo $version | awk '{ print $2 '})
+
+  if [ ! -z "$alpine_version" ]; then
+    tag="$tag-alpine$alpine_version"
+    build_args="$build_args --build-arg ALPINE_VERSION=$alpine_version"
+  fi
+
+  echo docker build $build_args -t $tag .
+  echo docker push $tag
+done
