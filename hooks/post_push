@@ -8,10 +8,11 @@ curl https://registry.hub.docker.com/v1/repositories/ruby/tags |\
 )
 
 for version in $VERSIONS; do
-  build_args="--build-arg RUBY_VERSION=$(echo $version | awk '{ print $1 '})"
-  tag="$IMAGE_NAME:$RUBY_VERSION"
-
+  ruby_version=$(echo $version | awk '{ print $1 '})
   alpine_version=$(echo $version | awk '{ print $2 '})
+
+  tag="$DOCKER_REPO:$ruby_version"
+  build_args="--build-arg RUBY_VERSION=$ruby_version"
 
   if [ ! -z "$alpine_version" ]; then
     tag="$tag-alpine$alpine_version"
