@@ -11,7 +11,13 @@ for version in $VERSIONS; do
   ruby_version=$(echo $version | awk '{ print $1 '})
   alpine_version=$(echo $version | awk '{ print $2 '})
 
-  tag="$DOCKER_REPO:$ruby_version"
+  if [ "${SOURCE_BRANCH:-master}" = "master" ]; then
+    tag="$DOCKER_REPO:"
+  else
+    tag="$IMAGE_NAME"
+  fi
+
+  tag="$tag$ruby_version"
   build_args="--build-arg RUBY_VERSION=$ruby_version"
 
   if [ ! -z "$alpine_version" ]; then
@@ -19,6 +25,6 @@ for version in $VERSIONS; do
     build_args="$build_args --build-arg ALPINE_VERSION=$alpine_version"
   fi
 
-  echo docker build $build_args -t $tag .
-  echo docker push $tag
+  docker build $build_args -t $tag .
+  docker push $tag
 done
