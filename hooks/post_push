@@ -7,7 +7,7 @@ curl https://registry.hub.docker.com/v1/repositories/ruby/tags |\
   sed 's/\(.*\)-alpine\(.*\)/\1 \2/'
 )
 
-for version in VERSIONS; do
+for version in $VERSIONS; do
   build_args="--build-arg RUBY_VERSION=$(echo $version | awk '{ print $1 '})"
   tag="$IMAGE_NAME:$RUBY_VERSION"
 
