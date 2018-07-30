@@ -31,7 +31,7 @@ RUN gem install graphviz -N
 
 RUN addgroup rails && \
     adduser -DG rails rails && \
-    mkdir -p tmp/cache node_modules && \
+    mkdir -p tmp/cache tmp/screenshots node_modules && \
     chown -R rails:rails . /usr/local/bundle
 
 VOLUME /app/tmp/cache /app/node_modules
