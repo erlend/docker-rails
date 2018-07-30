@@ -25,14 +25,16 @@ RUN apk add --no-cache \
       mariadb-dev \
       postgresql-dev \
       sqlite-dev \
-      tzdata && \
-    gem install graphviz -N && \
-    addgroup rails && \
-    adduser -DG rails rails && \
-    mkdir node_modules tmp && \
-    chown rails:rails . tmp node_modules /usr/local/bundle
+      tzdata
 
-VOLUME /app/tmp /app/node_modules /usr/local/bundle
+RUN gem install graphviz -N
+
+RUN addgroup rails && \
+    adduser -DG rails rails && \
+    mkdir -p tmp/cache node_modules && \
+    chown -R rails:rails . /usr/local/bundle
+
+VOLUME /app/tmp/cache /app/node_modules
 
 COPY entrypoint.sh /
 
