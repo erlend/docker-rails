@@ -3,18 +3,17 @@
 VERSIONS=$(
 curl https://registry.hub.docker.com/v1/repositories/ruby/tags |\
   json_pp |\
-  grep -o '[^"]*-alpine[^"]*' |\
-  sed 's/\(.*\)-alpine\(.*\)/\1 \2/'
+  grep -o '[^"]*-alpine[^"]*'
 )
 
 for version in $VERSIONS; do
-  ruby_version=$(echo $version | awk '{ print $1 '})
-  alpine_version=$(echo $version | awk '{ print $2 '})
+  ruby_version=${version%-alpine*}
+  alpine_version=${version#*-alpine}
 
   if [ "${SOURCE_BRANCH:-master}" = "master" ]; then
     tag="$DOCKER_REPO:"
   else
-    tag="$IMAGE_NAME"
+    tag="$IMAGE_NAME-"
   fi
 
   tag="$tag$ruby_version"
