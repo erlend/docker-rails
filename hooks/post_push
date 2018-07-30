@@ -1,0 +1,29 @@
+#!/bin/bash
+
+VERSIONS=$(
+curl https://registry.hub.docker.com/v1/repositories/ruby/tags |\
+  json_pp |\
+  grep -o '[^"]*-alpine[^"]*'
+)
+
+for version in $VERSIONS; do
+  ruby_version=${version%-alpine*}
+  alpine_version=${version#*-alpine}
+
+  if [ "${SOURCE_BRANCH:-master}" = "master" ]; then
+    tag="$DOCKER_REPO:"
+  else
+    tag="$IMAGE_NAME-"
+  fi
+
+  tag="$tag$ruby_version"
+  build_args="--build-arg RUBY_VERSION=$ruby_version"
+
+  if [ ! -z "$alpine_version" ]; then
+    tag="$tag-alpine$alpine_version"
+    build_args="$build_args --build-arg ALPINE_VERSION=$alpine_version"
+  fi
+
+  docker build $build_args -t $tag .
+  docker push $tag
+done
