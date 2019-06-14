@@ -27,7 +27,9 @@ RUN apk add --no-cache \
       sqlite-dev \
       tzdata
 
-RUN gem install graphviz -N
+RUN gem update --system && \
+    gem update bundler && \
+    gem install graphviz -N
 
 RUN addgroup rails && \
     adduser -DG rails rails && \
