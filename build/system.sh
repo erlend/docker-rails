@@ -34,14 +34,22 @@ fi
 notice Installing system dependencies...
 apk add -U dumb-init $BUILD_DEPS $BUILD_LIBS $RUN_LIBS
 
-bundle config build.nokogiri --use-system-libraries
-bundle config build.nokogumbo --use-system-libraries
-
 export \
   AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID-x} \
   AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY-x}
 
+notice Updating rubygems
+gem update --system
+
+BUNDLED_WITH_VERSION=`sed '1,/BUNDLED WITH/d' Gemfile.lock`
+if [ -n "$BUNDLED_WITH_VERSION" ]; then
+  notice Installing bundler
+  gem install bundler --version $BUNDLED_WITH_VERSION
+fi
+
 notice Installing Ruby packages...
+bundle config build.nokogiri --use-system-libraries
+bundle config build.nokogumbo --use-system-libraries
 bundle install --deployment --without="$BUNDLE_WITHOUT"
 
 notice Cleaning up...
